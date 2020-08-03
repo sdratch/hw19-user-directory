@@ -2,28 +2,32 @@ import React, { Component } from "react";
 import axios from "axios";
 import TableRow from "../components/TableRow";
 import Jumbo from "../components/Jumbo";
+import TableHeader from "../components/TableHeader";
 
 class Home extends Component {
+  
   state = {
     filter: "",
     people: [],
     filterArr: [],
   };
 
+  //on loading the page it will generate a list of 50 random users from the randomuser api
   componentDidMount() {
     axios
-      .get("https://randomuser.me/api/?results=5")
+      .get("https://randomuser.me/api/?results=50")
       .then((res) => {
+        //set the state of people to the list returned
         this.setState({ people: res.data.results });
-        console.log(this.state.people);
       })
       .catch((err) => {
         console.log(err);
       });
   }
-
+//Function to sort the employees in descending order
   sortEmployees = () => {
     function compare(a, b) {
+      //compate the first names
       if (a.name.first < b.name.first) {
         return -1;
       }
@@ -32,11 +36,11 @@ class Home extends Component {
       }
       return 0;
     }
-    this.setState({ people: this.state.people.sort(compare) }); //returns an array
-    console.log(this.state.people);
-    //then set the state
+    //sets the people array to the newly created sorted array
+    this.setState({ people: this.state.people.sort(compare) });
   };
 
+  //function to handle the input change in the filter input
   handleInputChange = (event) => {
     // Getting the value and name of the input which triggered the change
     let value = event.target.value;
@@ -46,60 +50,36 @@ class Home extends Component {
     this.setState({
       [name]: value,
     });
+    //call the filter employee function sending in the filter state
     this.filterEmployees(value);
   };
 
   filterEmployees(value) {
+    //compare the first or last name with the inputed letters in the filter input
     const file = value.toLowerCase();
     const arr = this.state.people.filter(function (person) {
-      return person.name.first.toLowerCase().includes(file);
+      return (person.name.first.toLowerCase().includes(file)
+      || person.name.last.toLowerCase().includes(file));
     });
-    console.log(arr);
+    //set the key filterArr to the filtered array
     this.setState({ filterArr: arr });
   }
+
   render() {
     return (
       <>
-        <div className="jumbotron jumbotron-fluid">
-          <div className="container">
-            <h1 className="display-4">Employee Tracker</h1>
-            <p className="lead">
-              Click the name to sort by name or type to filter by name
-            </p>
-            <div className="input-group input-group-sm mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text" id="inputGroup-sizing-sm">
-                  Filter Name
-                </span>
-              </div>
-              <input
-                name="filter"
-                valule={this.state.filer}
-                onChange={this.handleInputChange}
-                type="text"
-                className="form-control"
-                aria-label="Small"
-                aria-describedby="inputGroup-sizing-sm"
-              />
-            </div>
-          </div>
-        </div>
+        {/* jumbotron component */}
+        <Jumbo filter = {this.state.filter} onChange = {this.handleInputChange}/>
+      
         <table className="table">
-          <thead className="thead-dark">
-            <tr>
-              <th scope="col">Image</th>
-              <th scope="col" onClick={() => this.sortEmployees()}>
-                <button className="btn btn-light">Name</button>
-              </th>
-              <th scope="col">Email</th>
-              <th scope="col">Phone Number</th>
-              <th scope="col">City</th>
-            </tr>
-          </thead>
+          {/* table header component */}
+          <TableHeader sortEmployees={this.sortEmployees}/>
           <tbody>
+            {/* conditional to make it show up after the componentDidMount call */}
             {this.state.people ? (
+              // Conditional to use either the filtered array or the full array
               this.state.filter === "" ? (
-
+                //if the filter input field is empty use the people array
               this.state.people.map((person, index) =>
                   <TableRow
                     key={index}
@@ -110,6 +90,7 @@ class Home extends Component {
                     city={person.location.city}
                   />
               )):
+              //if the filter input has something there then use the filter array that is filtered
               (
               this.state.filterArr.map((person, index) =>
                   <TableRow
@@ -122,6 +103,7 @@ class Home extends Component {
                   />
               ))
             ) : (
+              //if there is no results
               <h1>noresults</h1>
             )}
           </tbody>

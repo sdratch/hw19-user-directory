@@ -1,6 +1,5 @@
 import React from "react";
 import Home from "./Container/Home";
-import Jumbo from "./components/Jumbo"
 
 function App() {
   return (

@@ -1,10 +1,10 @@
 import React from "react";
-
-const Jumbo = () => {
+// jumbo tron component
+const Jumbo = (props) => {
   return (
     <div className="jumbotron jumbotron-fluid">
       <div className="container">
-        <h1 className="display-4">Employee Tracjer</h1>
+        <h1 className="display-4">Employee Tracker</h1>
         <p className="lead">
           Click the name to sort by name or type to filter by name
         </p>
@@ -14,7 +14,12 @@ const Jumbo = () => {
               Filter Name
             </span>
           </div>
+          {/* input value that is used for filtering
+          passing in the onchange function and the filter input */}
           <input
+            name="filter"
+            value={props.filter}
+            onChange={props.onChange}
             type="text"
             className="form-control"
             aria-label="Small"
