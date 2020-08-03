@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import TableRow from "../components/TableRow"
 
 class Home extends Component {
   state = {
@@ -12,7 +13,6 @@ class Home extends Component {
       .then((res) => {
         this.setState({ people: res.data.results });
         console.log(this.state.people);
-        console.log(this.state.people[0].name.first);
       })
       .catch((err) => {
         console.log(err);
@@ -33,28 +33,15 @@ class Home extends Component {
         </thead>
         <tbody>
           {this.state.people ? (
-            this.state.people.map((person) => (
-              <tr>
-                <th>
-                  <img
-                    className="avatar"
-                    src={person.picture.thumbnail}
-                    alt="Avatar"
-                  ></img>
-                </th>
-                <th>
-                  {person.name.first} {person.name.last}
-                </th>
-                <th>
-                  {person.email}
-                </th>
-                <th>
-                  {person.cell}
-                </th>
-                <th>
-                  {person.location.city}
-                </th>
-              </tr>
+            this.state.people.map((person, index) => (
+              <TableRow 
+              key={index}
+              image = {person.picture.thumbnail}
+              name = {person.name.first + " " + person.name.last}
+              email = {person.email}
+              cell = {person.cell}
+              city = {person.location.city}
+              />
             ))
           ) : (
             <h1>noresults</h1>
