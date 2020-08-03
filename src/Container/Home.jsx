@@ -3,26 +3,27 @@ import axios from "axios";
 
 class Home extends Component {
   state = {
-    people: "",
+    people: [],
   };
 
-  componentDidMount = () => {
+  componentDidMount() {
     axios
-      .get("https://randomuser.me/api/")
+      .get("https://randomuser.me/api/?results=5")
       .then((res) => {
-        this.setState({ people: res });
+        this.setState({ people: res.data.results });
+        console.log(this.state.people);
+        console.log(this.state.people[0].name.first);
       })
       .catch((err) => {
         console.log(err);
       });
-      
-  };
+  }
+
   render() {
     return (
       <table className="table">
         <thead className="thead-dark">
           <tr>
-            <th scope="col">ID</th>
             <th scope="col">Image</th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
@@ -31,20 +32,33 @@ class Home extends Component {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>
-              <img
-                className="avatar"
-                src="https://randomuser.me/api/portraits/thumb/women/31.jpg"
-                alt="Avatar"
-              ></img>
-            </td>
-            <td>Casey Janett</td>
-            <td>asdf@asdg.com</td>
-            <td>549439439349</td>
-            <td>Atlanta</td>
-          </tr>
+          {this.state.people ? (
+            this.state.people.map((person) => (
+              <tr>
+                <th>
+                  <img
+                    className="avatar"
+                    src={person.picture.thumbnail}
+                    alt="Avatar"
+                  ></img>
+                </th>
+                <th>
+                  {person.name.first} {person.name.last}
+                </th>
+                <th>
+                  {person.email}
+                </th>
+                <th>
+                  {person.cell}
+                </th>
+                <th>
+                  {person.location.city}
+                </th>
+              </tr>
+            ))
+          ) : (
+            <h1>noresults</h1>
+          )}
         </tbody>
       </table>
     );
