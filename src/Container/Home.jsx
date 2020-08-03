@@ -19,13 +19,25 @@ class Home extends Component {
       });
   }
 
+sortEmployees = () => {
+    function compare(a, b){
+    if (a.name.first < b.name.first) {return -1;}
+     if (a.name.first > b.name.first) {return 1;}
+    return 0;
+   };
+   this.setState( {people: this.state.people.sort(compare)}) //returns an array
+   console.log(this.state.people)
+   //then set the state
+}
+
   render() {
     return (
       <table className="table">
         <thead className="thead-dark">
           <tr>
             <th scope="col">Image</th>
-            <th scope="col">Name</th>
+            <th scope="col" 
+            onClick={() => this.sortEmployees()}><button className = "btn btn-light">Name</button></th>
             <th scope="col">Email</th>
             <th scope="col">Phone Number</th>
             <th scope="col">City</th>
@@ -59,13 +71,5 @@ export default Home;
 //sort when onclick name
 //might add a on hover to show it is clickable or button
 
-// sortEmployees = (field) =>{
-//     function compare(a, b)
-//     if (a.[field] < b.[field]) {return -1;}
-//      if (a.[field] > b.[field]) {return 1;}
-//     return 0;
-//    });
-//    //setState(this.employees.sort(compare)) //returns an array
-//    //then set the state
-// }
+
 //remeber if passing in actual call make a call back function
